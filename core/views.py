@@ -4,10 +4,13 @@ from django.shortcuts import render
 
 
 def entrar(Request):
-    return render(Request, 'core/login.html')
+    return render(Request, 'core/inicial.html')
 
 def inicial(Request):
     return render(Request, 'core/inicial.html')
 
 def cadastrar(Request):
     return render(Request, 'core/cadastro.html')
+
+def primeira (Request):
+     return render(Request, 'core/primeira.html')

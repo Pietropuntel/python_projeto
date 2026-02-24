@@ -13,10 +13,9 @@
       justify-content: center;
       align-items: center;
       font-family: Arial, sans-serif;
-      overflow: hidden;
+      overflow: hidden; /* já impede rolagem da página */
     }
 
-    /* 🎥 Vídeo de fundo */
     #bg-video {
       position: fixed;
       top: 0;
@@ -27,7 +26,6 @@
       z-index: -1;
     }
 
-    /* 📦 Caixa do formulário */
     .cadastro-box {
       background: rgba(0, 0, 0, 0.70);
       padding: 40px;
@@ -35,8 +33,6 @@
       text-align: center;
       color: white;
       width: 350px;
-      max-height: 90vh;
-      overflow-y: auto;
     }
 
     .cadastro-box input {
@@ -53,14 +49,28 @@
       margin-top: 15px;
       border: none;
       border-radius: 6px;
-      background-color: #7ed957;
-      color: #000000;
       font-size: 16px;
       cursor: pointer;
+      transition: 0.3s;
     }
 
-    .cadastro-box button:hover {
+    .btn-cadastrar {
+      background-color: #7ed957;
+      color: #000000;
+    }
+
+    .btn-cadastrar:hover {
       background-color: rgb(72, 255, 0);
+    }
+
+    .btn-voltar {
+      background-color: white;
+      color: black;
+      margin-top: 10px;
+    }
+
+    .btn-voltar:hover {
+      background-color: #dddddd;
     }
 
     label {
@@ -69,17 +79,21 @@
       text-align: left;
       margin-top: 10px;
     }
+
+    .separador {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #ccc;
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- 🎥 Video Fundo -->
   <video autoplay muted loop id="bg-video">
-    <source src="{% static 'core/imgs/video.mp4' %}" type="video/mp4">
+    <source src="{% static 'core/imgs/video2.mp4' %}" type="video/mp4">
   </video>
 
-  <!-- 📦 Formulário Cadastro -->
   <div class="cadastro-box">
     <h2>Cadastro</h2>
 
@@ -104,8 +118,17 @@
       <label for="confirmar_senha">Confirmar Senha</label>
       <input type="password" id="confirmar_senha" name="confirmar_senha" required>
 
-      <button type="submit">Cadastrar</button>
+      <button type="submit" class="btn-cadastrar">Cadastrar</button>
     </form>
+
+    <div class="separador">ou</div>
+
+    <a href="{% url 'entrar' %}">
+      <button type="button" class="btn-voltar">
+        Voltar para Login
+      </button>
+    </a>
+
   </div>
 
 </body>
