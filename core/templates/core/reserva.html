@@ -1,0 +1,174 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Reserva</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #0f8c9d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container principal */
+.main-box {
+    width: 90%;
+    max-width: 900px;
+    background: #d9d9d9;
+    padding: 30px;
+    border-radius: 20px;
+}
+
+/* Área verde */
+.green-area {
+    background: #7ed957;
+    padding: 30px;
+    border-radius: 25px;
+    position: relative;
+}
+
+/* Título */
+.title {
+    background: #eeeeee;
+    padding: 10px 25px;
+    border-radius: 20px;
+    font-size: 32px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+/* Botão Home */
+.home-btn {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    background: #eeeeee;
+    padding: 8px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+/* Card central */
+.card {
+    background: #eeeeee;
+    width: 60%;
+    margin: 50px auto 0 auto;
+    padding: 30px;
+    border-radius: 25px;
+    text-align: center;
+}
+
+/* Campo Local */
+.local-box {
+    background: #cfd3d6;
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.local-box input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #e8e8e8;
+}
+
+/* Linha Data e Hora */
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.field {
+    width: 48%;
+}
+
+.field input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #cfd3d6;
+}
+
+/* Botões */
+.buttons {
+    margin-top: 25px;
+}
+
+.cancel-btn {
+    background: #f27d7d;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.save-btn {
+    background: #9bd37f;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="main-box">
+    <div class="green-area">
+
+        <div class="title">Reserva</div>
+        <a href="{% url 'principal' %}" class="home-btn">Home</a>
+
+        <div class="card">
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="local-box">
+                    <label><strong>Local</strong></label>
+                    <input type="text" name="local" placeholder="Digite o local">
+                </div>
+
+                <div class="row">
+                    <div class="field">
+                        <label><strong>Data</strong></label>
+                        <input type="date" name="data">
+                    </div>
+
+                    <div class="field">
+                        <label><strong>Hora</strong></label>
+                        <input type="time" name="hora">
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <button type="reset" class="cancel-btn">Cancelar</button>
+                    <button type="submit" class="save-btn">Salvar</button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
