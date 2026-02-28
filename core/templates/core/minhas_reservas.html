@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Minhas Reservas</title>
+
+    <style>
+        body{
+            margin:0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background:#6fd14b;
+        }
+
+        .container{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+        }
+
+        .main-card{
+            background:#f4f4f4;
+            padding:40px;
+            border-radius:25px;
+            width:85%;
+            max-width:1200px;
+            box-shadow:0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .content{
+            display:flex;
+            gap:50px;
+        }
+
+        .left, .right{
+            background:white;
+            padding:30px;
+            border-radius:20px;
+            box-shadow:0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        .left{ width:40%; }
+        .right{ width:60%; }
+
+        h1{
+            text-align:center;
+            margin-bottom:25px;
+        }
+
+        .reserva-card{
+            background:#f2f2f2;
+            padding:20px;
+            border-radius:15px;
+            margin-bottom:20px;
+        }
+
+        input{
+            width:100%;
+            padding:12px;
+            border-radius:10px;
+            border:1px solid #ddd;
+            margin-bottom:20px;
+            font-size:14px;
+        }
+
+        .buttons{
+            text-align:center;
+            margin-top:20px;
+        }
+
+        .cancel-btn{
+            background:#ff6b6b;
+            border:none;
+            padding:10px 25px;
+            border-radius:10px;
+            color:white;
+            margin-right:10px;
+            cursor:pointer;
+        }
+
+        .save-btn{
+            background:#6fd14b;
+            border:none;
+            padding:10px 25px;
+            border-radius:10px;
+            color:white;
+            cursor:pointer;
+        }
+
+        .alert-success{
+            background:#d4edda;
+            color:#155724;
+            padding:12px;
+            border-radius:8px;
+            margin-bottom:15px;
+            text-align:center;
+            display:none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="main-card">
+
+        <div class="content">
+
+            <!-- LADO ESQUERDO -->
+            <div class="left">
+                <h1>Minhas Reservas</h1>
+
+                {% if reservas %}
+                    {% for reserva in reservas %}
+                    <div class="reserva-card">
+                        <p><b>Local:</b> {{ reserva.local }}</p>
+                        <p><b>Data:</b> {{ reserva.data }}</p>
+                        <p><b>Horário:</b> {{ reserva.horario }}</p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Nenhuma reserva cadastrada.</p>
+                {% endif %}
+            </div>
+
+            <!-- LADO DIREITO -->
+            <div class="right">
+
+                <h2>Nova Reserva</h2>
+
+                <div id="successMessage" class="alert-success">
+                    Reserva salva com sucesso!
+                </div>
+
+                <input type="text" id="local" placeholder="Digite o local">
+                <input type="date" id="data">
+                <input type="time" id="hora">
+
+                <div class="buttons">
+                    <button class="cancel-btn" onclick="voltarHome()">Cancelar</button>
+                    <button class="save-btn" onclick="salvarReserva()">Salvar</button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    function voltarHome(){
+        window.location.href = "/principal/";
+    }
+
+    function salvarReserva(){
+        let local = document.getElementById("local").value;
+        let data = document.getElementById("data").value;
+        let hora = document.getElementById("hora").value;
+
+        if(local === "" || data === "" || hora === ""){
+            alert("Preencha todos os campos!");
+        } else {
+            document.getElementById("successMessage").style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>

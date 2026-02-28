@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Disponível</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  </head>
+
+  <body style="margin: 0; font-family: Arial; background-color: #7ed957">
+    <div style="padding: 20px">
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <h1
+          style="background: #e6e6e6; padding: 10px 20px; border-radius: 10px"
+        >
+          Disponível
+        </h1>
+
+        <a href="{% url 'principal' %}">
+          <button style="padding: 10px 20px; border-radius: 20px; border: none">
+            Home
+          </button>
+        </a>
+      </div>
+
+      <div
+        style="display: flex; justify-content: space-around; margin-top: 40px"
+      >
+        <!-- MAPA REAL -->
+        <div style="background: #f2f2f2; padding: 20px; border-radius: 20px">
+          <h2 style="text-align: center">Mapa</h2>
+
+          <div id="map" style=" width: 400px;height: 400px"></div>
+
+          <script>
+    // COORDENADAS QUE VOCÊ QUER MOSTRAR
+    var latitude = -29.714303265922897;    
+    var longitude = -52.42887989195492;
+
+    var map = L.map('map').setView([latitude, longitude], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Marcador na coordenada
+    L.marker([latitude, longitude])
+        .addTo(map)
+        .bindPopup("Local da reserva")
+        .openPopup();
+</script>
+
+        </div>
+
+        <!-- LISTA -->
+        <div style="background: #f2f2f2; padding: 20px; border-radius: 20px">
+          <h2 style="text-align: center">Lista de Postos</h2>
+
+          <div
+            style="
+              width: 400px;
+              height: 300px;
+              background: #ccc;
+              border-radius: 10px;
+            "
+          ></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

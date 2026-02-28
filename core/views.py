@@ -22,7 +22,7 @@ def reserva(request):
     return render(request, 'core/reserva.html')
 
 def disponibilidade(request):
-    return render(request, 'disponibilidade.html')
+    return render(request, 'core/loc_disponivel.html')
 
 def minha_reserva(request):
-    return render(request, 'minha_reserva.html')
+    return render(request, 'core/minhas_reservas.html')
