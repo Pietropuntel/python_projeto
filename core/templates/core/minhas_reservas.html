@@ -1,170 +1,172 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>Minhas Reservas</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minhas Reservas</title>
 
-    <style>
-        body{
-            margin:0;
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background:#6fd14b;
-        }
+<style>
+:root{
+    --primary:#166534;
+    --accent:#22c55e;
+    --bg:#f1f5f9;
+    --card:#ffffff;
+    --text:#1e293b;
+    --muted:#64748b;
+    --shadow:0 15px 40px rgba(0,0,0,0.08);
+}
 
-        .container{
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
-        }
+*{ box-sizing:border-box; }
 
-        .main-card{
-            background:#f4f4f4;
-            padding:40px;
-            border-radius:25px;
-            width:85%;
-            max-width:1200px;
-            box-shadow:0 15px 35px rgba(0,0,0,0.2);
-        }
+body{
+    margin:0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
 
-        .content{
-            display:flex;
-            gap:50px;
-        }
+/* HEADER */
+.header{
+    background:var(--card);
+    padding:20px 60px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 4px 15px rgba(0,0,0,0.05);
+}
 
-        .left, .right{
-            background:white;
-            padding:30px;
-            border-radius:20px;
-            box-shadow:0 8px 20px rgba(0,0,0,0.08);
-        }
+.header h1{
+    margin:0;
+    font-size:24px;
+    font-weight:600;
+    color:var(--primary);
+}
 
-        .left{ width:40%; }
-        .right{ width:60%; }
+.btn-voltar{
+    background:var(--accent);
+    color:white;
+    padding:10px 20px;
+    border-radius:30px;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:600;
+    transition:.3s;
+    box-shadow:0 6px 15px rgba(34,197,94,0.3);
+}
 
-        h1{
-            text-align:center;
-            margin-bottom:25px;
-        }
+.btn-voltar:hover{
+    background:#16a34a;
+    transform:translateY(-2px);
+}
 
-        .reserva-card{
-            background:#f2f2f2;
-            padding:20px;
-            border-radius:15px;
-            margin-bottom:20px;
-        }
+/* CONTAINER */
+.container{
+    max-width:1000px;
+    margin:40px auto;
+    padding:0 20px;
+}
 
-        input{
-            width:100%;
-            padding:12px;
-            border-radius:10px;
-            border:1px solid #ddd;
-            margin-bottom:20px;
-            font-size:14px;
-        }
+/* CARD */
+.reserva-card{
+    background:var(--card);
+    padding:25px;
+    border-radius:20px;
+    margin-bottom:25px;
+    box-shadow:var(--shadow);
+    transition:.3s;
+    border-left:6px solid var(--accent);
+}
 
-        .buttons{
-            text-align:center;
-            margin-top:20px;
-        }
+.reserva-card:hover{
+    transform:translateY(-5px);
+}
 
-        .cancel-btn{
-            background:#ff6b6b;
-            border:none;
-            padding:10px 25px;
-            border-radius:10px;
-            color:white;
-            margin-right:10px;
-            cursor:pointer;
-        }
+.reserva-header{
+    font-weight:600;
+    font-size:18px;
+    margin-bottom:15px;
+    color:var(--primary);
+}
 
-        .save-btn{
-            background:#6fd14b;
-            border:none;
-            padding:10px 25px;
-            border-radius:10px;
-            color:white;
-            cursor:pointer;
-        }
+.reserva-info{
+    display:flex;
+    gap:40px;
+    flex-wrap:wrap;
+    font-size:14px;
+    color:var(--muted);
+}
 
-        .alert-success{
-            background:#d4edda;
-            color:#155724;
-            padding:12px;
-            border-radius:8px;
-            margin-bottom:15px;
-            text-align:center;
-            display:none;
-        }
-    </style>
+.reserva-info span{
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+/* EMPTY STATE */
+.empty{
+    text-align:center;
+    padding:60px 20px;
+    background:var(--card);
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    color:var(--muted);
+}
+
+/* FOOTER */
+.footer{
+    text-align:center;
+    margin-top:50px;
+    color:var(--muted);
+    font-size:13px;
+}
+</style>
 </head>
 
 <body>
 
+<div class="header">
+    <h1>📅 Minhas Reservas</h1>
+    <a href="{% url 'principal' %}" class="btn-voltar">🏠 Voltar</a>
+</div>
+
 <div class="container">
 
-    <div class="main-card">
+    <div id="listaReservas"></div>
 
-        <div class="content">
-
-            <!-- LADO ESQUERDO -->
-            <div class="left">
-                <h1>Minhas Reservas</h1>
-
-                {% if reservas %}
-                    {% for reserva in reservas %}
-                    <div class="reserva-card">
-                        <p><b>Local:</b> {{ reserva.local }}</p>
-                        <p><b>Data:</b> {{ reserva.data }}</p>
-                        <p><b>Horário:</b> {{ reserva.horario }}</p>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <p>Nenhuma reserva cadastrada.</p>
-                {% endif %}
-            </div>
-
-            <!-- LADO DIREITO -->
-            <div class="right">
-
-                <h2>Nova Reserva</h2>
-
-                <div id="successMessage" class="alert-success">
-                    Reserva salva com sucesso!
-                </div>
-
-                <input type="text" id="local" placeholder="Digite o local">
-                <input type="date" id="data">
-                <input type="time" id="hora">
-
-                <div class="buttons">
-                    <button class="cancel-btn" onclick="voltarHome()">Cancelar</button>
-                    <button class="save-btn" onclick="salvarReserva()">Salvar</button>
-                </div>
-
-            </div>
-
-        </div>
-
+    <div class="footer">
+        Sistema de Reservas • 2026
     </div>
 
 </div>
 
 <script>
-    function voltarHome(){
-        window.location.href = "/principal/";
-    }
+const reservas = [
+    { local: "Estacionamento Central", data: "10/03/2026", horario: "14:00" },
+    { local: "Shopping Verde", data: "12/03/2026", horario: "09:30" }
+];
 
-    function salvarReserva(){
-        let local = document.getElementById("local").value;
-        let data = document.getElementById("data").value;
-        let hora = document.getElementById("hora").value;
+const lista = document.getElementById("listaReservas");
 
-        if(local === "" || data === "" || hora === ""){
-            alert("Preencha todos os campos!");
-        } else {
-            document.getElementById("successMessage").style.display = "block";
-        }
-    }
+if (reservas.length > 0) {
+    reservas.forEach(reserva => {
+        lista.innerHTML += `
+            <div class="reserva-card">
+                <div class="reserva-header">${reserva.local}</div>
+                <div class="reserva-info">
+                    <span>📆 <strong>Data:</strong> ${reserva.data}</span>
+                    <span>⏰ <strong>Horário:</strong> ${reserva.horario}</span>
+                </div>
+            </div>
+        `;
+    });
+} else {
+    lista.innerHTML = `
+        <div class="empty">
+            <h2>Você ainda não possui reservas</h2>
+            <p>Quando fizer uma reserva, ela aparecerá aqui.</p>
+        </div>
+    `;
+}
 </script>
 
 </body>

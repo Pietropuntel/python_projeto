@@ -3,220 +3,243 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Reserva</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova Reserva</title>
 
 <style>
-
-body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    background: linear-gradient(135deg, #0f8c9d, #0a6d79);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+:root{
+  --primary:#1e293b;
+  --accent:#22c55e;
+  --danger:#ef4444;
 }
 
-/* Container principal */
-.main-box {
-    width: 95%;
-    max-width: 900px;
-    background: #ffffff;
-    padding: 50px;
-    border-radius: 30px;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family:'Segoe UI', Tahoma, sans-serif;
+  background:linear-gradient(135deg,#0f172a,#1e293b);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
 }
 
-/* Área verde */
-.green-area {
-    background: linear-gradient(135deg, #7ed957, #63c13f);
-    padding: 50px;
-    border-radius: 35px;
-    position: relative;
+.container{
+  width:95%;
+  max-width:700px;
+  background:white;
+  padding:50px;
+  border-radius:30px;
+  box-shadow:0 25px 60px rgba(0,0,0,0.3);
+  animation:fadeUp .6s ease;
 }
 
-/* Título */
-.title {
-    background: white;
-    padding: 15px 40px;
-    border-radius: 40px;
-    font-size: 26px;
-    font-weight: 700;
-    text-align: center;
-    margin: 0 auto 50px auto;
-    width: fit-content;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+.title{
+  font-size:28px;
+  font-weight:700;
+  text-align:center;
+  margin-bottom:40px;
+  color:var(--primary);
 }
 
-/* Card formulário */
-.card {
-    background: white;
-    width: 70%;
-    margin: auto;
-    padding: 40px;
-    border-radius: 30px;
-    box-shadow: 0 20px 45px rgba(0,0,0,0.18);
+.field{ margin-bottom:25px; }
+
+label{
+  font-size:14px;
+  font-weight:600;
+  display:block;
+  margin-bottom:8px;
+  color:#334155;
 }
 
-/* Labels */
-label {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    display: block;
+input{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid #e2e8f0;
+  background:#f8fafc;
+  font-size:14px;
+  transition:.3s;
 }
 
-/* Inputs */
-input {
-    width: 100%;
-    padding: 14px;
-    border-radius: 15px;
-    border: 1px solid #ddd;
-    background: #f8f8f8;
-    font-size: 14px;
-    transition: all 0.3s ease;
+input:focus{
+  outline:none;
+  border-color:var(--accent);
+  background:white;
+  box-shadow:0 0 0 3px rgba(34,197,94,0.2);
 }
 
-input:focus {
-    outline: none;
-    border-color: #63c13f;
-    box-shadow: 0 0 12px rgba(99,193,63,0.4);
-    background: #ffffff;
+.row{
+  display:flex;
+  gap:20px;
 }
 
-/* Espaçamentos */
-.local-box {
-    margin-bottom: 25px;
+.row .field{ flex:1; }
+
+.buttons{
+  margin-top:40px;
+  display:flex;
+  justify-content:center;
+  gap:20px;
 }
 
-.row {
-    display: flex;
-    gap: 20px;
-    margin-top: 20px;
+button{
+  padding:12px 35px;
+  border-radius:30px;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
 }
 
-.field {
-    flex: 1;
+.cancel-btn{
+  background:var(--danger);
+  color:white;
 }
 
-/* Botões */
-.buttons {
-    margin-top: 40px;
-    text-align: center;
+.cancel-btn:hover{
+  background:#dc2626;
+  transform:translateY(-2px);
 }
 
-button {
-    padding: 12px 30px;
-    border-radius: 30px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
+.save-btn{
+  background:var(--accent);
+  color:white;
 }
 
-.cancel-btn {
-    background: #f27d7d;
-    color: white;
-    margin-right: 15px;
+.save-btn:hover{
+  background:#16a34a;
+  transform:translateY(-2px);
 }
 
-.cancel-btn:hover {
-    background: #e35c5c;
-    transform: translateY(-2px);
+/* MODAL */
+.modal{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  animation:fadeIn .3s ease;
 }
 
-.save-btn {
-    background: #63c13f;
-    color: white;
+.modal-box{
+  background:white;
+  padding:30px;
+  border-radius:20px;
+  width:90%;
+  max-width:400px;
+  text-align:center;
+  box-shadow:0 20px 50px rgba(0,0,0,0.3);
 }
 
-.save-btn:hover {
-    background: #4daf2d;
-    transform: translateY(-2px);
+.modal-buttons{
+  margin-top:20px;
+  display:flex;
+  justify-content:center;
+  gap:15px;
 }
 
-/* Mensagem sucesso */
-.success-message {
-    display: none;
-    margin-top: 25px;
-    padding: 15px;
-    background: #e6f7e6;
-    color: #2e7d32;
-    border-radius: 15px;
-    text-align: center;
-    font-weight: 600;
-    animation: fadeIn 0.4s ease-in-out;
+.modal button{
+  padding:10px 25px;
+  border-radius:25px;
 }
 
-/* Animação */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+.confirm-btn{
+  background:var(--danger);
+  color:white;
 }
 
+.close-btn{
+  background:#e2e8f0;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;}
+  to{opacity:1;}
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(30px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+@media(max-width:600px){
+  .row{ flex-direction:column; }
+}
 </style>
 </head>
 
 <body>
 
-<div class="main-box">
-    <div class="green-area">
+<div class="container">
 
-        <div class="title">Reserva</div>
+  <div class="title">Nova Reserva</div>
 
-        <div class="card">
+  <!-- FORMULÁRIO FUNCIONAL -->
+  <form method="POST" action="{% url 'principal' %}">
+    {% csrf_token %}
 
-            <form id="reservaForm">
-
-                <div class="local-box">
-                    <label>Local</label>
-                    <input type="text" name="local" placeholder="Digite o local" required>
-                </div>
-
-                <div class="row">
-                    <div class="field">
-                        <label>Data</label>
-                        <input type="date" name="data" required>
-                    </div>
-
-                    <div class="field">
-                        <label>Hora</label>
-                        <input type="time" name="hora" required>
-                    </div>
-                </div>
-
-                <div class="buttons">
-                    <button type="button" class="cancel-btn"
-                        onclick=window.location.href='{% url "principal" %}'>
-                        Cancelar
-                    </button>
-
-                    <button type="submit" class="save-btn">
-                        Salvar
-                    </button>
-                </div>
-
-                <div class="success-message" id="successMessage">
-                    Reserva salva com sucesso!
-                </div>
-
-            </form>
-
-        </div>
-
+    <div class="field">
+      <label>Local</label>
+      <input type="text" name="local" placeholder="Digite o local da reserva" required>
     </div>
+
+    <div class="row">
+      <div class="field">
+        <label>Data</label>
+        <input type="date" name="data" required>
+      </div>
+
+      <div class="field">
+        <label>Hora</label>
+        <input type="time" name="horario" required>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button type="button" class="cancel-btn" onclick="abrirModal()">
+        Cancelar
+      </button>
+
+      <button type="submit" class="save-btn">
+        Salvar Reserva
+      </button>
+    </div>
+
+  </form>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="confirmModal">
+  <div class="modal-box">
+    <h3>Cancelar reserva?</h3>
+    <p>Você perderá as informações preenchidas.</p>
+
+    <div class="modal-buttons">
+      <button class="close-btn" onclick="fecharModal()">Voltar</button>
+      <button class="confirm-btn" onclick="irParaHome()">Sim, Cancelar</button>
+    </div>
+  </div>
 </div>
 
 <script>
-document.getElementById("reservaForm").addEventListener("submit", function(event){
-    event.preventDefault();
+function abrirModal(){
+  document.getElementById("confirmModal").style.display = "flex";
+}
 
-    if(this.checkValidity()){
-        document.getElementById("successMessage").style.display = "block";
-        this.reset();
-    }
-});
+function fecharModal(){
+  document.getElementById("confirmModal").style.display = "none";
+}
+
+function irParaHome(){
+  window.location.href = "{% url 'principal' %}";
+}
 </script>
 
 </body>

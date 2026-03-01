@@ -6,99 +6,134 @@
 <title>Recar</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <style>
+:root{
+    --primary:#0f8c9d;
+    --dark:#0b5f6b;
+    --light:#f8fafc;
+    --white:#ffffff;
+    --shadow:0 20px 40px rgba(0,0,0,0.08);
+}
+
+*{ box-sizing:border-box; }
 
 html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-}
-
-body {
+    overflow: hidden; /* 🔥 REMOVE A BARRA DE ROLAGEM */
     font-family: 'Segoe UI', Arial, sans-serif;
-    background-color: #0f8c9d;
+    background: linear-gradient(135deg,#0f8c9d,#0b5f6b);
 }
 
-/* ESTRUTURA PRINCIPAL */
 .main-container {
-    height: 100vh;
+    height: 100vh; /* 🔥 ocupa exatamente a tela */
     display: flex;
     flex-direction: column;
 }
 
 /* NAVBAR */
 .navbar {
-    background: white;
-    padding: 15px 40px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    padding: 18px 60px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow);
 }
 
 .logo {
     font-size: 26px;
-    font-weight: bold;
-    color: #0f8c9d;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: 1px;
 }
 
 .nav-links a {
     text-decoration: none;
-    margin-left: 25px;
-    color: #333;
-    font-weight: 500;
+    margin-left: 30px;
+    color: #334155;
+    font-weight: 600;
+    transition: .3s;
+}
+
+.nav-links a:hover {
+    color: var(--primary);
 }
 
 /* HERO */
 .hero {
     text-align: center;
-    padding: 20px;
+    padding: 30px 20px 10px;
     color: white;
 }
 
-.hero h1 {
-    margin: 10px 0;
+.hero h1{
+    font-size: 32px;
+    margin-bottom: 5px;
 }
 
+.hero p{
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* BOTÕES */
 .actions {
-    margin-top: 15px;
+    margin-top: 20px;
 }
 
 .action-btn {
     background: white;
-    color: #0f8c9d;
-    padding: 10px 25px;
-    margin: 5px;
-    border-radius: 30px;
+    color: var(--primary);
+    padding: 12px 28px;
+    margin: 6px;
+    border-radius: 40px;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 600;
+    display: inline-block;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
 }
 
-/* MAPA ocupa o resto da tela */
-.map-section {
-    flex: 1;
-    background: #7ed957;
-    margin: 20px;
-    border-radius: 25px;
+.action-btn:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+
+/* MAP CARD */
+.map-container {
+    background: var(--white);
+    margin: 20px auto;
     padding: 20px;
+    border-radius: 30px;
+    width: 90%;
+    max-width: 1200px;
+    box-shadow: var(--shadow);
+    flex: 1; /* 🔥 ocupa o espaço restante */
     display: flex;
     flex-direction: column;
 }
 
 .map-title {
-    background: white;
-    padding: 6px 20px;
-    border-radius: 20px;
-    font-weight: bold;
-    align-self: flex-start;
-    margin-bottom: 10px;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #1e293b;
 }
 
 #map {
-    flex: 1;
-    border-radius: 15px;
+    flex: 1; /* 🔥 mapa se adapta */
+    width: 100%;
+    border-radius: 25px;
+    border: 4px solid var(--primary);
 }
-
 </style>
 </head>
 
@@ -106,50 +141,59 @@ body {
 
 <div class="main-container">
 
-    <!-- NAVBAR -->
     <div class="navbar">
-        <div class="logo">Recar</div>
+        <div class="logo">⚡ Recar</div>
         <div class="nav-links">
-            <a href="{% url 'minha_reserva' %}">Minhas Reservas </a>
+            <a href="{% url 'minha_reserva' %}">Minhas Reservas</a>
         </div>
     </div>
 
-    <!-- HERO -->
     <div class="hero">
         <h1>Encontre Pontos de Recarga</h1>
+        <p>Localize, reserve e recarregue seu veículo elétrico com facilidade.</p>
+
         <div class="actions">
             <a href="{% url 'reserva' %}" class="action-btn">Fazer Reserva</a>
             <a href="{% url 'disponibilidade' %}" class="action-btn">Ver Disponibilidade</a>
         </div>
     </div>
 
-    <!-- MAPA -->
-    <div class="map-section">
-        <div class="map-title">Mapa de Recarga</div>
+    <div class="map-container">
+        <h2 class="map-title">Mapa de Pontos de Recarga</h2>
         <div id="map"></div>
     </div>
 
 </div>
 
 <script>
-function initMap() {
-    const portoAlegre = { lat: -30.0346, lng: -51.2177 };
+var locais = [
+    { nome: "Country", lat: -29.7086, lng: -52.3989 },
+    { nome: "Afubra", lat: -29.716762, lng: -52.4381019 },
+    { nome: "Ana Nery", lat: -29.7377030, lng: -52.4275250 },
+    { nome: "Drogaria scs", lat: -29.7189196, lng: -52.4291451},
+    { nome: "Hotel scs", lat: -29.7187701, lng: -52.4290317 },
+    { nome: "Hotel charr", lat: -29.7133042, lng: -52.4275987},
+    { nome: "Shopping scs", lat: -29.7052081, lng: -52.4295978 },
+    { nome: "Zé pneus", lat: -29.7183036, lng: -52.4453116 },
+    { nome: "Gm cristais", lat: -29.6885243, lng: -52.4193519 },
+    { nome: "Lisa Ruth", lat: -29.6912246, lng: -52.4010206 },
+    { nome: "Solled Energia", lat: -29.6912904, lng: -52.3956234 },
+    { nome: "Eletroposto", lat: -29.691261, lng: -52.3957817 },
+    { nome: "Unisc", lat: -29.699022, lng: -52.4387877 },
+    { nome: "Mercado Saudável", lat: -29.7052255, lng: -52.4275137 },
+];
 
-    const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 13,
-        center: portoAlegre,
-    });
+var map = L.map('map').setView([locais[0].lat, locais[0].lng], 13);
 
-    new google.maps.Marker({
-        position: portoAlegre,
-        map: map,
-        title: "Ponto de Recarga"
-    });
-}
-</script>
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
 
-<script async
-src="https://maps.googleapis.com/maps/api/js?key=SUA_API_KEY_AQUI&callback=initMap">
+locais.forEach(function(local) {
+    L.marker([local.lat, local.lng])
+        .addTo(map)
+        .bindPopup("<b>"+local.nome+"</b>");
+});
 </script>
 
 </body>

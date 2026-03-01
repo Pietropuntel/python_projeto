@@ -1,76 +1,225 @@
 <!doctype html>
-<html>
-  <head>
-    <title>Disponível</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  </head>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Postos Disponíveis</title>
 
-  <body style="margin: 0; font-family: Arial; background-color: #7ed957">
-    <div style="padding: 20px">
-      <div
-        style="
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        "
-      >
-        <h1
-          style="background: #e6e6e6; padding: 10px 20px; border-radius: 10px"
-        >
-          Disponível
-        </h1>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-        <a href="{% url 'principal' %}">
-          <button style="padding: 10px 20px; border-radius: 20px; border: none">
-            Home
-          </button>
-        </a>
-      </div>
+<style>
+:root{
+  --primary:#0f172a;
+  --accent:#22c55e;
+  --light:#f1f5f9;
+  --card:#ffffff;
+  --shadow:0 15px 35px rgba(0,0,0,0.08);
+}
 
-      <div
-        style="display: flex; justify-content: space-around; margin-top: 40px"
-      >
-        <!-- MAPA REAL -->
-        <div style="background: #f2f2f2; padding: 20px; border-radius: 20px">
-          <h2 style="text-align: center">Mapa</h2>
+*{ box-sizing:border-box; }
 
-          <div id="map" style=" width: 400px;height: 400px"></div>
+html, body{
+  height:100%;
+  margin:0;
+  overflow:hidden;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background:var(--light);
+}
 
-          <script>
-    // COORDENADAS QUE VOCÊ QUER MOSTRAR
-    var latitude = -29.714303265922897;    
-    var longitude = -52.42887989195492;
+.main{
+  height:100vh;
+  padding:30px 60px;
+  max-width:1400px;
+  margin:auto;
+  display:flex;
+  flex-direction:column;
+}
 
-    var map = L.map('map').setView([latitude, longitude], 13);
+/* HEADER */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+.header h1{
+  margin:0;
+  font-size:28px;
+  font-weight:600;
+  color:var(--primary);
+}
 
-    // Marcador na coordenada
-    L.marker([latitude, longitude])
-        .addTo(map)
-        .bindPopup("Local da reserva")
-        .openPopup();
+/* BOTÃO NO TOPO */
+.btn-home{
+  background:var(--accent);
+  color:white;
+  padding:12px 20px;
+  border-radius:30px;
+  text-decoration:none;
+  font-weight:600;
+  font-size:14px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  transition:.3s;
+}
+
+.btn-home:hover{
+  transform:translateY(-3px);
+  background:#16a34a;
+}
+
+/* CONTENT */
+.content{
+  flex:1;
+  display:grid;
+  grid-template-columns: 2fr 1fr;
+  gap:30px;
+  min-height:0;
+}
+
+.card{
+  background:var(--card);
+  border-radius:25px;
+  box-shadow:var(--shadow);
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+}
+
+#map{
+  flex:1;
+  width:100%;
+  border-radius:20px;
+}
+
+/* LISTA */
+.lista{
+  overflow-y:auto;
+}
+
+.lista-item{
+  padding:16px;
+  margin-bottom:14px;
+  border-radius:14px;
+  background:#f8fafc;
+  cursor:pointer;
+  transition:.25s;
+  font-weight:500;
+  border:1px solid transparent;
+}
+
+.lista-item:hover{
+  background:#e2e8f0;
+  transform:translateX(5px);
+}
+
+.lista-item.active{
+  background:var(--accent);
+  color:white;
+  border-color:var(--accent);
+}
+
+/* CONTADOR EMBAIXO */
+.footer{
+  text-align:center;
+  margin-top:15px;
+}
+
+.badge{
+  background:var(--accent);
+  color:white;
+  padding:8px 18px;
+  border-radius:30px;
+  font-size:14px;
+  font-weight:600;
+  display:inline-block;
+}
+</style>
+</head>
+
+<body>
+
+<div class="main">
+
+  <div class="header">
+    <h1>Postos Disponíveis</h1>
+    <a href="{% url 'principal' %}" class="btn-home">🏠 Home</a>
+  </div>
+
+  <div class="content">
+
+    <div class="card">
+      <h3>Mapa Interativo</h3>
+      <div id="map"></div>
+    </div>
+
+    <div class="card lista">
+      <h3>Lista de Postos</h3>
+      <div id="lista-postos"></div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div class="badge" id="contador"></div>
+  </div>
+
+</div>
+
+<script>
+var locais = [
+   { nome: "Country", lat: -29.7086, lng: -52.3989 },
+   { nome: "Afubra", lat: -29.716762, lng: -52.4381019 },
+   { nome: "Ana Nery", lat: -29.7377030, lng: -52.4275250 },
+   { nome: "Drogaria scs", lat: -29.7189196, lng: -52.4291451},
+   { nome: "Hotel scs", lat: -29.7187701, lng: -52.4290317 },
+   { nome: "Hotel charr", lat: -29.7133042, lng: -52.4275987},
+   { nome: "Shopping scs", lat: -29.7052081, lng: -52.4295978 },
+   { nome: "Zé pneus", lat: -29.7183036, lng: -52.4453116 },
+   { nome: "Gm cristais", lat: -29.6885243, lng: -52.4193519 },
+   { nome: "Lisa Ruth", lat: -29.6912246, lng: -52.4010206 },
+   { nome: "Solled Energia", lat: -29.6912904, lng: -52.3956234 },
+   { nome: "Eletroposto", lat: -29.691261, lng: -52.3957817 },
+   { nome: "Unisc", lat: -29.699022, lng: -52.4387877 },
+   { nome: "Mercado Saudável", lat: -29.7052255, lng: -52.4275137 },
+];
+
+document.getElementById("contador").innerText = locais.length + " postos disponíveis";
+
+var map = L.map('map').setView([locais[0].lat, locais[0].lng], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+var bounds = [];
+var listaContainer = document.getElementById("lista-postos");
+
+locais.forEach(function(local) {
+
+  var marker = L.marker([local.lat, local.lng])
+      .addTo(map)
+      .bindPopup("<b>" + local.nome + "</b>");
+
+  bounds.push([local.lat, local.lng]);
+
+  var item = document.createElement("div");
+  item.className = "lista-item";
+  item.innerText = local.nome;
+
+  item.onclick = function() {
+    document.querySelectorAll(".lista-item").forEach(el => el.classList.remove("active"));
+    item.classList.add("active");
+    map.setView([local.lat, local.lng], 16);
+    marker.openPopup();
+  };
+
+  listaContainer.appendChild(item);
+});
+
+map.fitBounds(bounds);
 </script>
 
-        </div>
-
-        <!-- LISTA -->
-        <div style="background: #f2f2f2; padding: 20px; border-radius: 20px">
-          <h2 style="text-align: center">Lista de Postos</h2>
-
-          <div
-            style="
-              width: 400px;
-              height: 300px;
-              background: #ccc;
-              border-radius: 10px;
-            "
-          ></div>
-        </div>
-      </div>
-    </div>
-  </body>
+</body>
 </html>
